@@ -1,38 +1,36 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView from 'react-native-maps';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Marker } from 'react-native-maps';
+import {Map} from './components/Map';
+import { x1rpc } from './Api'
+
 
 
 
 export default function App() {
-  const [region, setRegion] = useState({
-    latitude: 57.8136, 
-    longitude: 28.3496,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
-  
-  const onRegionChange = (region) => {
-    setRegion(region)
+  const [appState, setAppState] = useState({});
+  useEffect(() => {
+    x1rpc('client.data', 'read', {
+      model: 'INFO_RECIPIENT',
+      msource: 'toop',
+      withDisplay: true,
+    }).then(response => {
+      const allResponse = response;
+      setAppState(allResponse)
+    })
+  }, [setAppState])
+
+  const [marks, setMark] = useState([]);
+
+  for(var i = 0; i < appState.total; i++) {
+    marks[i] = appState.items[i].GEO_POSITION_LIVE;
   }
-  const [mark, setMark] = useState()
+
   return (
     <View style={styles.container}>
-      <Text>HEADER</Text>
-
-      <MapView style={styles.map}
-      initialRegion={region}
-      onRegionChange={onRegionChange}
-      onPress={(e) => {
-        alert(JSON.stringify(e.nativeEvent.coordinate))}
-      }
-      >
-        <Marker
-         coordinate={{ latitude : 57.8136 , longitude : 28.3496 }}
-        />
-      </MapView>
-
+      <Text>Text</Text>
+      <Map appState={appState} marks={marks}/>
     </View>
   );
 }
@@ -47,9 +45,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-end',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height - 200,
   },
 });
