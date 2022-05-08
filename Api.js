@@ -4,7 +4,7 @@ export const base = 'http://szpskov.edu-soft.ru'
 
 export const Api = axios.create({
     validateStatus: function (status) {
-        return status === 200 || status === 204;
+        return status === 200 || status === 204 || status === 400;
     },
     defaults: {
         headers: {

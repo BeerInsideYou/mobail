@@ -12,23 +12,22 @@ export const Map = () => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
-    
     const [adress, setAdress] = useState('Адрес');
     const [marks, setMark] = useState([]);
     const [appState, setAppState] = useState({});
 
     useEffect(() => {
-      x1rpc('client.data', 'read', {
-        model: 'INFO_RECIPIENT',
-        msource: 'toop',
-        withDisplay: true,
-      }).then(response => {
-        const allResponse = response;
-        setAppState(allResponse)
-      })
+        x1rpc('client.data', 'read', {
+          model: 'INFO_RECIPIENT',
+          msource: 'toop',
+          withDisplay: true,
+        }).then(response => {
+          const allResponse = response;
+          setAppState(allResponse)
+        })
     }, [setAppState])
-
-
+  
+  //Заполняем массив марок с их координатами
   for(var i = 0; i < appState.total; i++) {
     marks[i] = appState.items[i].GEO_POSITION_LIVE;
   }
@@ -43,7 +42,7 @@ export const Map = () => {
                 <Marker
                   key={i}
                   coordinate={{ latitude: +marker.split(',')[0], longitude: +marker.split(',')[1] }}
-                  onPress={() => setAdress('Улица: ' + appState.items[i].STREET_WORK)}
+                  onPress={() => setAdress('Адрес: ' + appState.items[i].STREET_WORK)}
                 />
               ))}
             </MapView>
@@ -54,10 +53,11 @@ export const Map = () => {
 const styles = StyleSheet.create({
     map: {
       width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height - 100,
+      height: Dimensions.get('window').height - 110,
     },
     adres: {
       marginTop: 30,
       paddingLeft: 10,
+      fontSize: 20
     }
   });

@@ -1,18 +1,38 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { auth } from '../authserv';
+
 
 export function Login({navigation}) {
-    const loadScene = () => {
-        navigation.navigate('Menu');
-    }
-
     const [userLog, setUserLog] = useState('');
     const [userPass, setUserPass] = useState('');
+    const [data, setData] = useState({})
+
+    const loadScene = () => {
+      if(userLog && userPass) {
+        auth(userLog, userPass).then(response => {
+          console.log(response)
+        }).catch(error => console.log(error))
+        //navigation.navigate('Menu');
+      } else {
+        alert("Заполните все поля")
+      }
+    }
 
     return (
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder='Email...'></TextInput>
-        <TextInput style={styles.input} placeholder='Password...'></TextInput>
+        <TextInput
+          onChangeText={setUserLog}
+          style={styles.input}
+          placeholder='Email...'>
+        </TextInput>
+
+        <TextInput
+          onChangeText={setUserPass}
+          style={styles.input}
+          placeholder='Password...'>
+        </TextInput>
+
         <Button title="Войти" onPress={loadScene}/>
       </View>
     );
